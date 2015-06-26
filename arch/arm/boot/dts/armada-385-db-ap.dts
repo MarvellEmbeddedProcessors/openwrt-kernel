@@ -156,10 +156,20 @@
 			pcie@2,0 {
 				/* Port 1, Lane 0 */
 				status = "okay";
+
+				mwlwifi {
+					marvell,2ghz = <0>;
+					marvell,chainmask = <4 4>;
+				};
 			};
 			pcie@3,0 {
 				/* Port 2, Lane 0 */
 				status = "okay";
+
+				mwlwifi {
+					marvell,5ghz = <0>;
+					marvell,chainmask = <4 4>;
+				};
 			};
 		};
 	};
