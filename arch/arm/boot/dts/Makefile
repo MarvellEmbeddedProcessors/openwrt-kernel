@@ -96,6 +96,7 @@ dtb-$(CONFIG_ARCH_MVEBU) += armada-38x-modular.dtb \
 	armada-385-customer1.dtb \
 	armada-382-customer2.dtb \
 	armada-385-customer3.dtb \
+	armada-385-db-ap.dtb \
 	armada-388-clearfog.dtb
 dtb-$(CONFIG_ARCH_MXC) += \
 	imx25-karo-tx25.dtb \
