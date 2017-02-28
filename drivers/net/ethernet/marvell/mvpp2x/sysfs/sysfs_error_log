@@ -1,0 +1,329 @@
+[vvid@b50 sysfs]$ make
+echo 'PP2_MOD_DIR=/opt/17.02/linux-marvell/drivers/net/ethernet/marvell/mvpp2x/sysfs/..'
+PP2_MOD_DIR=/opt/17.02/linux-marvell/drivers/net/ethernet/marvell/mvpp2x/sysfs/..
+make -C /opt/17.02/linux-marvell/ M=/opt/17.02/linux-marvell/drivers/net/ethernet/marvell/mvpp2x/sysfs modules
+make[1]: Entering directory '/opt/17.02/linux-marvell'
+  CC [M]  /opt/17.02/linux-marvell/drivers/net/ethernet/marvell/mvpp2x/sysfs/mv_pp2x_sysfs_main.o
+In file included from ./arch/arm64/include/asm/esr.h:21:0,
+                 from ./arch/arm64/include/asm/debug-monitors.h:23,
+                 from ./arch/arm64/include/asm/bug.h:21,
+                 from include/linux/bug.h:4,
+                 from include/linux/thread_info.h:11,
+                 from include/asm-generic/preempt.h:4,
+                 from arch/arm64/include/generated/asm/preempt.h:1,
+                 from include/linux/preempt.h:59,
+                 from include/linux/spinlock.h:50,
+                 from include/linux/seqlock.h:35,
+                 from include/linux/time.h:5,
+                 from include/linux/ktime.h:24,
+                 from include/linux/timer.h:5,
+                 from include/linux/netdevice.h:28,
+                 from /opt/17.02/linux-marvell/drivers/net/ethernet/marvell/mvpp2x/sysfs/mv_pp2x_sysfs_main.c:30:
+./arch/arm64/include/asm/memory.h: In function 'virt_to_phys':
+./arch/arm64/include/asm/memory.h:51:20: error: 'CONFIG_ARM64_VA_BITS' undeclared (first use in this function)
+ #define VA_BITS   (CONFIG_ARM64_VA_BITS)
+                    ^
+./arch/arm64/include/asm/memory.h:53:50: note: in expansion of macro 'VA_BITS'
+ #define PAGE_OFFSET  (UL(0xffffffffffffffff) << (VA_BITS - 1))
+                                                  ^
+./arch/arm64/include/asm/memory.h:78:48: note: in expansion of macro 'PAGE_OFFSET'
+ #define __virt_to_phys(x) (((phys_addr_t)(x) - PAGE_OFFSET + PHYS_OFFSET))
+                                                ^
+./arch/arm64/include/asm/memory.h:135:9: note: in expansion of macro '__virt_to_phys'
+  return __virt_to_phys((unsigned long)(x));
+         ^
+./arch/arm64/include/asm/memory.h:51:20: note: each undeclared identifier is reported only once for each function it appears in
+ #define VA_BITS   (CONFIG_ARM64_VA_BITS)
+                    ^
+./arch/arm64/include/asm/memory.h:53:50: note: in expansion of macro 'VA_BITS'
+ #define PAGE_OFFSET  (UL(0xffffffffffffffff) << (VA_BITS - 1))
+                                                  ^
+./arch/arm64/include/asm/memory.h:78:48: note: in expansion of macro 'PAGE_OFFSET'
+ #define __virt_to_phys(x) (((phys_addr_t)(x) - PAGE_OFFSET + PHYS_OFFSET))
+                                                ^
+./arch/arm64/include/asm/memory.h:135:9: note: in expansion of macro '__virt_to_phys'
+  return __virt_to_phys((unsigned long)(x));
+         ^
+./arch/arm64/include/asm/memory.h: In function 'phys_to_virt':
+./arch/arm64/include/asm/memory.h:51:20: error: 'CONFIG_ARM64_VA_BITS' undeclared (first use in this function)
+ #define VA_BITS   (CONFIG_ARM64_VA_BITS)
+                    ^
+./arch/arm64/include/asm/memory.h:53:50: note: in expansion of macro 'VA_BITS'
+ #define PAGE_OFFSET  (UL(0xffffffffffffffff) << (VA_BITS - 1))
+                                                  ^
+./arch/arm64/include/asm/memory.h:79:64: note: in expansion of macro 'PAGE_OFFSET'
+ #define __phys_to_virt(x) ((unsigned long)((x) - PHYS_OFFSET + PAGE_OFFSET))
+                                                                ^
+./arch/arm64/include/asm/memory.h:141:18: note: in expansion of macro '__phys_to_virt'
+  return (void *)(__phys_to_virt(x));
+                  ^
+In file included from ./arch/arm64/include/asm/spinlock.h:19:0,
+                 from include/linux/spinlock.h:87,
+                 from include/linux/seqlock.h:35,
+                 from include/linux/time.h:5,
+                 from include/linux/ktime.h:24,
+                 from include/linux/timer.h:5,
+                 from include/linux/netdevice.h:28,
+                 from /opt/17.02/linux-marvell/drivers/net/ethernet/marvell/mvpp2x/sysfs/mv_pp2x_sysfs_main.c:30:
+./arch/arm64/include/asm/atomic_ll_sc.h: At top level:
+./arch/arm64/include/asm/atomic_ll_sc.h:105:38: error: unknown type name 'atomic64_t'
+ __LL_SC_PREFIX(atomic64_##op(long i, atomic64_t *v))   \
+                                      ^
+./arch/arm64/include/asm/lse.h:46:27: note: in definition of macro '__LL_SC_PREFIX'
+ #define __LL_SC_PREFIX(x) x
+                           ^
+./arch/arm64/include/asm/atomic_ll_sc.h:144:2: note: in expansion of macro 'ATOMIC64_OP'
+  ATOMIC64_OP(__VA_ARGS__)     \
+  ^
+./arch/arm64/include/asm/atomic_ll_sc.h:148:2: note: in expansion of macro 'ATOMIC64_OPS'
+  ATOMIC64_OPS(__VA_ARGS__)     \
+  ^
+./arch/arm64/include/asm/atomic_ll_sc.h:153:1: note: in expansion of macro 'ATOMIC64_OPS_RLX'
+ ATOMIC64_OPS_RLX(add, add)
+ ^
+./arch/arm64/include/asm/atomic_ll_sc.h:123:53: error: unknown type name 'atomic64_t'
+ __LL_SC_PREFIX(atomic64_##op##_return##name(long i, atomic64_t *v)) \
+                                                     ^
+./arch/arm64/include/asm/lse.h:46:27: note: in definition of macro '__LL_SC_PREFIX'
+ #define __LL_SC_PREFIX(x) x
+                           ^
+./arch/arm64/include/asm/atomic_ll_sc.h:145:2: note: in expansion of macro 'ATOMIC64_OP_RETURN'
+  ATOMIC64_OP_RETURN(, dmb ish,  , l, "memory", __VA_ARGS__)
+  ^
+./arch/arm64/include/asm/atomic_ll_sc.h:148:2: note: in expansion of macro 'ATOMIC64_OPS'
+  ATOMIC64_OPS(__VA_ARGS__)     \
+  ^
+./arch/arm64/include/asm/atomic_ll_sc.h:153:1: note: in expansion of macro 'ATOMIC64_OPS_RLX'
+ ATOMIC64_OPS_RLX(add, add)
+ ^
+./arch/arm64/include/asm/atomic_ll_sc.h:123:53: error: unknown type name 'atomic64_t'
+ __LL_SC_PREFIX(atomic64_##op##_return##name(long i, atomic64_t *v)) \
+                                                     ^
+./arch/arm64/include/asm/lse.h:46:27: note: in definition of macro '__LL_SC_PREFIX'
+ #define __LL_SC_PREFIX(x) x
+                           ^
+./arch/arm64/include/asm/atomic_ll_sc.h:149:2: note: in expansion of macro 'ATOMIC64_OP_RETURN'
+  ATOMIC64_OP_RETURN(_relaxed,,  ,  ,         , __VA_ARGS__) \
+  ^
+./arch/arm64/include/asm/atomic_ll_sc.h:153:1: note: in expansion of macro 'ATOMIC64_OPS_RLX'
+ ATOMIC64_OPS_RLX(add, add)
+ ^
+./arch/arm64/include/asm/atomic_ll_sc.h:123:53: error: unknown type name 'atomic64_t'
+ __LL_SC_PREFIX(atomic64_##op##_return##name(long i, atomic64_t *v)) \
+                                                     ^
+./arch/arm64/include/asm/lse.h:46:27: note: in definition of macro '__LL_SC_PREFIX'
+ #define __LL_SC_PREFIX(x) x
+                           ^
+./arch/arm64/include/asm/atomic_ll_sc.h:150:2: note: in expansion of macro 'ATOMIC64_OP_RETURN'
+  ATOMIC64_OP_RETURN(_acquire,, a,  , "memory", __VA_ARGS__) \
+  ^
+./arch/arm64/include/asm/atomic_ll_sc.h:153:1: note: in expansion of macro 'ATOMIC64_OPS_RLX'
+ ATOMIC64_OPS_RLX(add, add)
+ ^
+./arch/arm64/include/asm/atomic_ll_sc.h:123:53: error: unknown type name 'atomic64_t'
+ __LL_SC_PREFIX(atomic64_##op##_return##name(long i, atomic64_t *v)) \
+                                                     ^
+./arch/arm64/include/asm/lse.h:46:27: note: in definition of macro '__LL_SC_PREFIX'
+ #define __LL_SC_PREFIX(x) x
+                           ^
+./arch/arm64/include/asm/atomic_ll_sc.h:151:2: note: in expansion of macro 'ATOMIC64_OP_RETURN'
+  ATOMIC64_OP_RETURN(_release,,  , l, "memory", __VA_ARGS__)
+  ^
+./arch/arm64/include/asm/atomic_ll_sc.h:153:1: note: in expansion of macro 'ATOMIC64_OPS_RLX'
+ ATOMIC64_OPS_RLX(add, add)
+ ^
+./arch/arm64/include/asm/atomic_ll_sc.h:105:38: error: unknown type name 'atomic64_t'
+ __LL_SC_PREFIX(atomic64_##op(long i, atomic64_t *v))   \
+                                      ^
+./arch/arm64/include/asm/lse.h:46:27: note: in definition of macro '__LL_SC_PREFIX'
+ #define __LL_SC_PREFIX(x) x
+                           ^
+./arch/arm64/include/asm/atomic_ll_sc.h:144:2: note: in expansion of macro 'ATOMIC64_OP'
+  ATOMIC64_OP(__VA_ARGS__)     \
+  ^
+./arch/arm64/include/asm/atomic_ll_sc.h:148:2: note: in expansion of macro 'ATOMIC64_OPS'
+  ATOMIC64_OPS(__VA_ARGS__)     \
+  ^
+./arch/arm64/include/asm/atomic_ll_sc.h:154:1: note: in expansion of macro 'ATOMIC64_OPS_RLX'
+ ATOMIC64_OPS_RLX(sub, sub)
+ ^
+./arch/arm64/include/asm/atomic_ll_sc.h:123:53: error: unknown type name 'atomic64_t'
+ __LL_SC_PREFIX(atomic64_##op##_return##name(long i, atomic64_t *v)) \
+                                                     ^
+./arch/arm64/include/asm/lse.h:46:27: note: in definition of macro '__LL_SC_PREFIX'
+ #define __LL_SC_PREFIX(x) x
+                           ^
+./arch/arm64/include/asm/atomic_ll_sc.h:145:2: note: in expansion of macro 'ATOMIC64_OP_RETURN'
+  ATOMIC64_OP_RETURN(, dmb ish,  , l, "memory", __VA_ARGS__)
+  ^
+./arch/arm64/include/asm/atomic_ll_sc.h:148:2: note: in expansion of macro 'ATOMIC64_OPS'
+  ATOMIC64_OPS(__VA_ARGS__)     \
+  ^
+./arch/arm64/include/asm/atomic_ll_sc.h:154:1: note: in expansion of macro 'ATOMIC64_OPS_RLX'
+ ATOMIC64_OPS_RLX(sub, sub)
+ ^
+./arch/arm64/include/asm/atomic_ll_sc.h:123:53: error: unknown type name 'atomic64_t'
+ __LL_SC_PREFIX(atomic64_##op##_return##name(long i, atomic64_t *v)) \
+                                                     ^
+./arch/arm64/include/asm/lse.h:46:27: note: in definition of macro '__LL_SC_PREFIX'
+ #define __LL_SC_PREFIX(x) x
+                           ^
+./arch/arm64/include/asm/atomic_ll_sc.h:149:2: note: in expansion of macro 'ATOMIC64_OP_RETURN'
+  ATOMIC64_OP_RETURN(_relaxed,,  ,  ,         , __VA_ARGS__) \
+  ^
+./arch/arm64/include/asm/atomic_ll_sc.h:154:1: note: in expansion of macro 'ATOMIC64_OPS_RLX'
+ ATOMIC64_OPS_RLX(sub, sub)
+ ^
+./arch/arm64/include/asm/atomic_ll_sc.h:123:53: error: unknown type name 'atomic64_t'
+ __LL_SC_PREFIX(atomic64_##op##_return##name(long i, atomic64_t *v)) \
+                                                     ^
+./arch/arm64/include/asm/lse.h:46:27: note: in definition of macro '__LL_SC_PREFIX'
+ #define __LL_SC_PREFIX(x) x
+                           ^
+./arch/arm64/include/asm/atomic_ll_sc.h:150:2: note: in expansion of macro 'ATOMIC64_OP_RETURN'
+  ATOMIC64_OP_RETURN(_acquire,, a,  , "memory", __VA_ARGS__) \
+  ^
+./arch/arm64/include/asm/atomic_ll_sc.h:154:1: note: in expansion of macro 'ATOMIC64_OPS_RLX'
+ ATOMIC64_OPS_RLX(sub, sub)
+ ^
+./arch/arm64/include/asm/atomic_ll_sc.h:123:53: error: unknown type name 'atomic64_t'
+ __LL_SC_PREFIX(atomic64_##op##_return##name(long i, atomic64_t *v)) \
+                                                     ^
+./arch/arm64/include/asm/lse.h:46:27: note: in definition of macro '__LL_SC_PREFIX'
+ #define __LL_SC_PREFIX(x) x
+                           ^
+./arch/arm64/include/asm/atomic_ll_sc.h:151:2: note: in expansion of macro 'ATOMIC64_OP_RETURN'
+  ATOMIC64_OP_RETURN(_release,,  , l, "memory", __VA_ARGS__)
+  ^
+./arch/arm64/include/asm/atomic_ll_sc.h:154:1: note: in expansion of macro 'ATOMIC64_OPS_RLX'
+ ATOMIC64_OPS_RLX(sub, sub)
+ ^
+./arch/arm64/include/asm/atomic_ll_sc.h:105:38: error: unknown type name 'atomic64_t'
+ __LL_SC_PREFIX(atomic64_##op(long i, atomic64_t *v))   \
+                                      ^
+./arch/arm64/include/asm/lse.h:46:27: note: in definition of macro '__LL_SC_PREFIX'
+ #define __LL_SC_PREFIX(x) x
+                           ^
+./arch/arm64/include/asm/atomic_ll_sc.h:156:1: note: in expansion of macro 'ATOMIC64_OP'
+ ATOMIC64_OP(and, and)
+ ^
+./arch/arm64/include/asm/atomic_ll_sc.h:105:38: error: unknown type name 'atomic64_t'
+ __LL_SC_PREFIX(atomic64_##op(long i, atomic64_t *v))   \
+                                      ^
+./arch/arm64/include/asm/lse.h:46:27: note: in definition of macro '__LL_SC_PREFIX'
+ #define __LL_SC_PREFIX(x) x
+                           ^
+./arch/arm64/include/asm/atomic_ll_sc.h:157:1: note: in expansion of macro 'ATOMIC64_OP'
+ ATOMIC64_OP(andnot, bic)
+ ^
+./arch/arm64/include/asm/atomic_ll_sc.h:105:38: error: unknown type name 'atomic64_t'
+ __LL_SC_PREFIX(atomic64_##op(long i, atomic64_t *v))   \
+                                      ^
+./arch/arm64/include/asm/lse.h:46:27: note: in definition of macro '__LL_SC_PREFIX'
+ #define __LL_SC_PREFIX(x) x
+                           ^
+./arch/arm64/include/asm/atomic_ll_sc.h:158:1: note: in expansion of macro 'ATOMIC64_OP'
+ ATOMIC64_OP(or, orr)
+ ^
+./arch/arm64/include/asm/atomic_ll_sc.h:105:38: error: unknown type name 'atomic64_t'
+ __LL_SC_PREFIX(atomic64_##op(long i, atomic64_t *v))   \
+                                      ^
+./arch/arm64/include/asm/lse.h:46:27: note: in definition of macro '__LL_SC_PREFIX'
+ #define __LL_SC_PREFIX(x) x
+                           ^
+./arch/arm64/include/asm/atomic_ll_sc.h:159:1: note: in expansion of macro 'ATOMIC64_OP'
+ ATOMIC64_OP(xor, eor)
+ ^
+./arch/arm64/include/asm/atomic_ll_sc.h:167:41: error: unknown type name 'atomic64_t'
+ __LL_SC_PREFIX(atomic64_dec_if_positive(atomic64_t *v))
+                                         ^
+./arch/arm64/include/asm/lse.h:46:27: note: in definition of macro '__LL_SC_PREFIX'
+ #define __LL_SC_PREFIX(x) x
+                           ^
+In file included from include/linux/mm_types.h:16:0,
+                 from include/linux/mm.h:16,
+                 from include/linux/scatterlist.h:7,
+                 from include/linux/dmaengine.h:24,
+                 from include/linux/netdevice.h:38,
+                 from /opt/17.02/linux-marvell/drivers/net/ethernet/marvell/mvpp2x/sysfs/mv_pp2x_sysfs_main.c:30:
+./arch/arm64/include/asm/mmu.h:20:2: error: unknown type name 'atomic64_t'
+  atomic64_t id;
+  ^
+In file included from ./arch/arm64/include/asm/esr.h:21:0,
+                 from ./arch/arm64/include/asm/debug-monitors.h:23,
+                 from ./arch/arm64/include/asm/bug.h:21,
+                 from include/linux/bug.h:4,
+                 from include/linux/thread_info.h:11,
+                 from include/asm-generic/preempt.h:4,
+                 from arch/arm64/include/generated/asm/preempt.h:1,
+                 from include/linux/preempt.h:59,
+                 from include/linux/spinlock.h:50,
+                 from include/linux/seqlock.h:35,
+                 from include/linux/time.h:5,
+                 from include/linux/ktime.h:24,
+                 from include/linux/timer.h:5,
+                 from include/linux/netdevice.h:28,
+                 from /opt/17.02/linux-marvell/drivers/net/ethernet/marvell/mvpp2x/sysfs/mv_pp2x_sysfs_main.c:30:
+./arch/arm64/include/asm/pgtable.h: In function 'pmd_page_vaddr':
+./arch/arm64/include/asm/memory.h:51:20: error: 'CONFIG_ARM64_VA_BITS' undeclared (first use in this function)
+ #define VA_BITS   (CONFIG_ARM64_VA_BITS)
+                    ^
+./arch/arm64/include/asm/memory.h:53:50: note: in expansion of macro 'VA_BITS'
+ #define PAGE_OFFSET  (UL(0xffffffffffffffff) << (VA_BITS - 1))
+                                                  ^
+./arch/arm64/include/asm/memory.h:79:64: note: in expansion of macro 'PAGE_OFFSET'
+ #define __phys_to_virt(x) ((unsigned long)((x) - PHYS_OFFSET + PAGE_OFFSET))
+                                                                ^
+./arch/arm64/include/asm/memory.h:148:28: note: in expansion of macro '__phys_to_virt'
+ #define __va(x)   ((void *)__phys_to_virt((phys_addr_t)(x)))
+                            ^
+./arch/arm64/include/asm/pgtable.h:431:9: note: in expansion of macro '__va'
+  return __va(pmd_val(pmd) & PHYS_MASK & (s32)PAGE_MASK);
+         ^
+./arch/arm64/include/asm/pgtable.h: At top level:
+./arch/arm64/include/asm/memory.h:51:20: error: 'CONFIG_ARM64_VA_BITS' undeclared here (not in a function)
+ #define VA_BITS   (CONFIG_ARM64_VA_BITS)
+                    ^
+./arch/arm64/include/asm/pgtable-hwdef.h:81:30: note: in expansion of macro 'VA_BITS'
+ #define PTRS_PER_PGD  (1 << (VA_BITS - PGDIR_SHIFT))
+                              ^
+./arch/arm64/include/asm/pgtable.h:636:29: note: in expansion of macro 'PTRS_PER_PGD'
+ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
+                             ^
+In file included from include/linux/skbuff.h:36:0,
+                 from include/linux/if_ether.h:23,
+                 from include/uapi/linux/ethtool.h:17,
+                 from include/linux/ethtool.h:16,
+                 from include/linux/netdevice.h:42,
+                 from /opt/17.02/linux-marvell/drivers/net/ethernet/marvell/mvpp2x/sysfs/mv_pp2x_sysfs_main.c:30:
+include/linux/sched.h:593:2: error: unknown type name 'atomic64_t'
+  atomic64_t utime;
+  ^
+include/linux/sched.h:594:2: error: unknown type name 'atomic64_t'
+  atomic64_t stime;
+  ^
+include/linux/sched.h:595:2: error: unknown type name 'atomic64_t'
+  atomic64_t sum_exec_runtime;
+  ^
+In file included from include/linux/netdevice.h:43:0,
+                 from /opt/17.02/linux-marvell/drivers/net/ethernet/marvell/mvpp2x/sysfs/mv_pp2x_sysfs_main.c:30:
+include/net/net_namespace.h:56:2: error: unknown type name 'atomic64_t'
+  atomic64_t  cookie_gen;
+  ^
+In file included from include/linux/phy.h:24:0,
+                 from include/net/dsa.h:19,
+                 from include/linux/netdevice.h:44,
+                 from /opt/17.02/linux-marvell/drivers/net/ethernet/marvell/mvpp2x/sysfs/mv_pp2x_sysfs_main.c:30:
+include/linux/module.h:408:27: error: field 'arch' has incomplete type
+  struct mod_arch_specific arch;
+                           ^
+In file included from include/net/inet_sock.h:27:0,
+                 from include/net/ip.h:30,
+                 from /opt/17.02/linux-marvell/drivers/net/ethernet/marvell/mvpp2x/sysfs/mv_pp2x_sysfs_main.c:40:
+include/net/sock.h:205:2: error: unknown type name 'atomic64_t'
+  atomic64_t  skc_cookie;
+  ^
+make[2]: *** [scripts/Makefile.build:259: /opt/17.02/linux-marvell/drivers/net/ethernet/marvell/mvpp2x/sysfs/mv_pp2x_sysfs_main.o] Error 1
+make[1]: *** [Makefile:1390: _module_/opt/17.02/linux-marvell/drivers/net/ethernet/marvell/mvpp2x/sysfs] Error 2
+make[1]: Leaving directory '/opt/17.02/linux-marvell'
+make: *** [Makefile:84: all] Error 2
