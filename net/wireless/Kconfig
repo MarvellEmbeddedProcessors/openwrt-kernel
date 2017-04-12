@@ -154,7 +154,7 @@ config CFG80211_DEBUGFS
 
 config CFG80211_INTERNAL_REGDB
 	bool "use statically compiled regulatory rules database" if EXPERT
-	default n
+	default y
 	depends on CFG80211
 	---help---
 	  This option generates an internal data structure representing
