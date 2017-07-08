@@ -20,6 +20,8 @@
 #include <linux/platform_device.h>
 #include <linux/of_address.h>
 #include <linux/of_pci.h>
+#include <linux/phy/phy.h>
+#include <linux/of_gpio.h>
 
 /* PCIe core registers */
 #define PCIE_CORE_CMD_STATUS_REG				0x4
@@ -31,6 +33,7 @@
 #define     PCIE_CORE_DEV_CTRL_STATS_MAX_PAYLOAD_SZ_SHIFT	5
 #define     PCIE_CORE_DEV_CTRL_STATS_SNOOP_DISABLE		(0 << 11)
 #define     PCIE_CORE_DEV_CTRL_STATS_MAX_RD_REQ_SIZE_SHIFT	12
+#define     PCIE_CORE_MAX_PAYLOAD_SZ				0x2
 #define PCIE_CORE_LINK_CTRL_STAT_REG				0xd0
 #define     PCIE_CORE_LINK_L0S_ENTRY				BIT(0)
 #define     PCIE_CORE_LINK_TRAINING				BIT(5)
@@ -40,6 +43,10 @@
 #define     PCIE_CORE_ERR_CAPCTL_ECRC_CHK_TX_EN			BIT(6)
 #define     PCIE_CORE_ERR_CAPCTL_ECRC_CHCK			BIT(7)
 #define     PCIE_CORE_ERR_CAPCTL_ECRC_CHCK_RCV			BIT(8)
+#define PCIE_PHY_REF_CLOCK					0x4814
+#define     PCIE_PHY_CTRL_OFF					16
+#define     PCIE_PHY_BUF_CTRL_OFF				0
+#define     PCIE_PHY_BUF_CTRL_INIT_VAL				0x1342
 
 /* PIO registers base address and register offsets */
 #define PIO_BASE_ADDR				0x4000
@@ -187,6 +194,7 @@
 struct advk_pcie {
 	struct platform_device *pdev;
 	void __iomem *base;
+	struct phy *phy;
 	struct list_head resources;
 	struct irq_domain *irq_domain;
 	struct irq_chip irq_chip;
@@ -197,6 +205,8 @@ struct advk_pcie {
 	struct mutex msi_used_lock;
 	u16 msi_msg;
 	int root_bus_nr;
+	char *reset_name;
+	struct gpio_desc *reset_gpio;
 };
 
 static inline void advk_writel(struct advk_pcie *pcie, u32 val, u64 reg)
@@ -286,7 +296,7 @@ static void advk_pcie_setup_hw(struct advk_pcie *pcie)
 
 	/* Set PCIe Device Control and Status 1 PF0 register */
 	reg = PCIE_CORE_DEV_CTRL_STATS_RELAX_ORDER_DISABLE |
-		(7 << PCIE_CORE_DEV_CTRL_STATS_MAX_PAYLOAD_SZ_SHIFT) |
+		(2 << PCIE_CORE_DEV_CTRL_STATS_MAX_PAYLOAD_SZ_SHIFT) |
 		PCIE_CORE_DEV_CTRL_STATS_SNOOP_DISABLE |
 		PCIE_CORE_DEV_CTRL_STATS_MAX_RD_REQ_SIZE_SHIFT;
 	advk_writel(pcie, reg, PCIE_CORE_DEV_CTRL_STATS_REG);
@@ -911,6 +921,59 @@ out_release_res:
 	return err;
 }
 
+static int advk_pcie_find_smpss(struct pci_dev *dev, void *data)
+{
+	u8 *smpss = data;
+
+	if (!dev)
+		return 0;
+
+	if (!pci_is_pcie(dev))
+		return 0;
+
+	if (*smpss > dev->pcie_mpss)
+		*smpss = dev->pcie_mpss;
+
+	return 0;
+}
+
+static int advk_pcie_bus_configure_mps(struct pci_dev *dev, void *data)
+{
+	int mps;
+
+	if (!dev)
+		return 0;
+
+	if (!pci_is_pcie(dev))
+		return 0;
+
+	mps = 128 << *(u8 *)data;
+	pcie_set_mps(dev, mps);
+
+	return 0;
+}
+
+static void advk_pcie_configure_mps(struct pci_bus *bus, struct advk_pcie *pcie)
+{
+	u8 smpss = PCIE_CORE_MAX_PAYLOAD_SZ;
+	u32 reg;
+
+	/* Find the minimal supported MAX payload size */
+	advk_pcie_find_smpss(bus->self, &smpss);
+	pci_walk_bus(bus, advk_pcie_find_smpss, &smpss);
+
+	/* Configure RC MAX payload size */
+	reg = advk_readl(pcie, PCIE_CORE_DEV_CTRL_STATS_REG);
+	reg &= ~PCI_EXP_DEVCTL_PAYLOAD;
+	reg |= smpss << PCIE_CORE_DEV_CTRL_STATS_MAX_PAYLOAD_SZ_SHIFT;
+	advk_writel(pcie, reg, PCIE_CORE_DEV_CTRL_STATS_REG);
+
+	/* Configure device MAX payload size */
+	advk_pcie_bus_configure_mps(bus->self, &smpss);
+	pci_walk_bus(bus, advk_pcie_bus_configure_mps, &smpss);
+
+}
+
 static int advk_pcie_probe(struct platform_device *pdev)
 {
 	struct advk_pcie *pcie;
@@ -919,7 +982,11 @@ static int advk_pcie_probe(struct platform_device *pdev)
 	struct msi_controller *msi;
 	struct device_node *msi_node;
 	struct clk *clk;
+	struct phy *comphy;
+	struct device_node *dn = pdev->dev.of_node;
 	int ret, irq;
+	enum of_gpio_flags flags;
+	int reset_gpio;
 
 	pcie = devm_kzalloc(&pdev->dev, sizeof(struct advk_pcie),
 			    GFP_KERNEL);
@@ -934,6 +1001,23 @@ static int advk_pcie_probe(struct platform_device *pdev)
 	if (IS_ERR(pcie->base)) {
 		dev_err(&pdev->dev, "Failed to map registers\n");
 		return PTR_ERR(pcie->base);
+	}
+
+	/* Get comphy and init if there is */
+	comphy = devm_of_phy_get(&pdev->dev, dn, "comphy");
+	if (!IS_ERR(comphy)) {
+		/* Set HY Reference Clock Buffer Control */
+		advk_writel(pcie, PCIE_PHY_BUF_CTRL_INIT_VAL, PCIE_PHY_REF_CLOCK);
+		pcie->phy = comphy;
+		ret = phy_init(pcie->phy);
+		if (ret)
+			return ret;
+
+		ret = phy_power_on(pcie->phy);
+		if (ret) {
+			phy_exit(pcie->phy);
+			goto err_exit_phy;
+		}
 	}
 
 	irq = platform_get_irq(pdev, 0);
@@ -951,12 +1035,61 @@ static int advk_pcie_probe(struct platform_device *pdev)
 		return PTR_ERR(clk);
 	}
 
+	/* Config reset gpio for pcie */
+	reset_gpio = of_get_named_gpio_flags(dn, "reset-gpios", 0, &flags);
+	if (reset_gpio != -EPROBE_DEFER) {
+		pcie->reset_gpio = gpio_to_desc(reset_gpio);
+		if (gpio_is_valid(reset_gpio)) {
+			unsigned long gpio_flags;
+
+			/* WA: to avoid reset fail, set the reset gpio to low first */
+			gpiod_direction_output(pcie->reset_gpio, 0);
+
+			/* Enable pcie clock and after 200ms to reset pcie */
+			ret = clk_prepare_enable(clk);
+			if (ret) {
+				dev_err(&pdev->dev, "Failed to enable clock\n");
+				return ret;
+			}
+			mdelay(200);
+
+			/* Set GPIO for pcie reset */
+			pcie->reset_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s-reset",
+							  pdev->name);
+			if (!pcie->reset_name) {
+				ret = -ENOMEM;
+				dev_err(&pdev->dev, "devm_kasprintf failed\n");
+				return ret;
+			}
+
+			if (flags & OF_GPIO_ACTIVE_LOW) {
+				dev_info(&pdev->dev, "%s: reset gpio is active low\n",
+					 of_node_full_name(dn));
+				gpio_flags = GPIOF_ACTIVE_LOW |
+					     GPIOF_OUT_INIT_LOW;
+			} else {
+				gpio_flags = GPIOF_OUT_INIT_HIGH;
+			}
+
+			ret = devm_gpio_request_one(&pdev->dev, reset_gpio, gpio_flags,
+						    pcie->reset_name);
+			if (ret) {
+				dev_err(&pdev->dev,
+					"gpio_request for gpio failed, err = %d\n",
+					ret);
+				return ret;
+			}
+			/* continue init flow after pcie reset */
+			goto after_pcie_reset;
+		}
+	}
+
 	ret = clk_prepare_enable(clk);
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to enable clock\n");
 		return ret;
 	}
-
+after_pcie_reset:
 	ret = advk_pcie_parse_request_of_pci_ranges(pcie);
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to parse resources\n");
@@ -998,12 +1131,19 @@ static int advk_pcie_probe(struct platform_device *pdev)
 	list_for_each_entry(child, &bus->children, node)
 		pcie_bus_configure_settings(child);
 
+	/* Configure the MAX pay load size */
+	advk_pcie_configure_mps(bus, pcie);
+
 	pci_bus_add_devices(bus);
 
 	return 0;
 
 err_clk:
 	clk_disable_unprepare(clk);
+err_exit_phy:
+	if (pcie->phy)
+		phy_exit(pcie->phy);
+
 	return ret;
 }
 
