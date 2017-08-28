@@ -362,6 +362,7 @@ static int ehci_orion_drv_remove(struct platform_device *pdev)
 	return 0;
 }
 
+#ifdef CONFIG_PM
 static int ehci_orion_drv_suspend(struct platform_device *pdev,
 				  pm_message_t state)
 {
@@ -386,6 +387,7 @@ static int ehci_orion_drv_suspend(struct platform_device *pdev,
 
 	return 0;
 }
+#endif
 
 #define MV_USB_CORE_CMD_RESET_BIT           1
 #define MV_USB_CORE_CMD_RESET_MASK          (1 << MV_USB_CORE_CMD_RESET_BIT)
@@ -396,6 +398,7 @@ static int ehci_orion_drv_suspend(struct platform_device *pdev,
 #define MV_USB_CORE_CMD_RUN_BIT             0
 #define MV_USB_CORE_CMD_RUN_MASK            (1 << MV_USB_CORE_CMD_RUN_BIT)
 
+#ifdef CONFIG_PM
 static int ehci_orion_drv_resume(struct platform_device *pdev)
 {
 	struct usb_hcd *hcd = platform_get_drvdata(pdev);
@@ -454,6 +457,7 @@ static int ehci_orion_drv_resume(struct platform_device *pdev)
 
 	return 0;
 }
+#endif
 
 static void ehci_orion_drv_shutdown(struct platform_device *pdev)
 {
