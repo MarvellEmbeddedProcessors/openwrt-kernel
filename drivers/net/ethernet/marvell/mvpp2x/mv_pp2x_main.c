@@ -4073,7 +4073,7 @@ u16 mv_pp2x_select_queue(struct net_device *dev, struct sk_buff *skb,
 	else
 		val = fallback(dev, skb);
 
-	return (val % mv_pp2x_txq_number) + (smp_processor_id() * mv_pp2x_txq_number);
+	return (val % mv_pp2x_txq_number) + (raw_smp_processor_id() * mv_pp2x_txq_number);
 }
 
 /* Device ops */
