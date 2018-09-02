@@ -718,6 +718,11 @@ static const struct usb_device_id option_ids[] = {
 	{ USB_DEVICE(OPTION_VENDOR_ID, OPTION_PRODUCT_ETNA_MODEM_EX) },
 	{ USB_DEVICE(OPTION_VENDOR_ID, OPTION_PRODUCT_ETNA_KOI_MODEM) },
 	{ USB_DEVICE(OPTION_VENDOR_ID, OPTION_PRODUCT_GTM380_MODEM) },
+	{ USB_DEVICE(QUALCOMM_VENDOR_ID, 0x9215)}, /* Quectel EC20 */
+	{ USB_DEVICE(0x2C7C, 0x0121)}, /* Quectel EC21 */
+	{ USB_DEVICE(0x2C7C, 0x0125)}, /* Quectel EC25 */
+	{ USB_DEVICE(0x19D2, 0x1476)}, /* GOSUNCN */
+	{ USB_DEVICE(0x19D2, 0x1509)}, /* GOSUNCN */
 	{ USB_DEVICE(QUANTA_VENDOR_ID, QUANTA_PRODUCT_Q101) },
 	{ USB_DEVICE(QUANTA_VENDOR_ID, QUANTA_PRODUCT_Q111) },
 	{ USB_DEVICE(QUANTA_VENDOR_ID, QUANTA_PRODUCT_GLX) },
@@ -2134,6 +2139,16 @@ static int option_probe(struct usb_serial *serial,
 	    dev_desc->idProduct == cpu_to_le16(SAMSUNG_PRODUCT_GT_B3730) &&
 	    iface_desc->bInterfaceClass != USB_CLASS_CDC_DATA)
 		return -ENODEV;
+
+	//hood add for debug
+	if (dev_desc->idVendor == 0x19d2 && dev_desc->idProduct == 0x1476 &&
+		(iface_desc->bInterfaceNumber == 3 || iface_desc->bInterfaceNumber == 4))
+		return -ENODEV;
+
+	if (dev_desc->idVendor == 0x19d2 && dev_desc->idProduct == 0x1509 &&
+		(iface_desc->bInterfaceNumber == 4 || iface_desc->bInterfaceNumber == 5))
+		return -ENODEV;
+	//hood add end
 
 	/* Store the blacklist info so we can use it during attach. */
 	usb_set_serial_data(serial, (void *)blacklist);
