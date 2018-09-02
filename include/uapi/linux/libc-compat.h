@@ -49,13 +49,13 @@
 #ifndef _UAPI_LIBC_COMPAT_H
 #define _UAPI_LIBC_COMPAT_H
 
-/* We have included glibc headers... */
-#if defined(__GLIBC__)
+/* We have included libc headers... */
+#if !defined(__KERNEL__)
 
-/* Coordinate with glibc net/if.h header. */
-#if defined(_NET_IF_H) && defined(__USE_MISC)
+/* Coordinate with libc net/if.h header. */
+#if defined(_NET_IF_H)
 
-/* GLIBC headers included first so don't define anything
+/* LIBC headers included first so don't define anything
  * that would already be defined. */
 
 #define __UAPI_DEF_IF_IFCONF 0
@@ -86,10 +86,18 @@
 
 #endif /* _NET_IF_H */
 
-/* Coordinate with glibc netinet/in.h header. */
+/* musl defines the ethhdr struct itself in its netinet/if_ether.h.
+ * Glibc just includes the kernel header and uses a different guard. */
+#if defined(_NETINET_IF_ETHER_H)
+#define __UAPI_DEF_ETHHDR		0
+#else
+#define __UAPI_DEF_ETHHDR		1
+#endif
+
+/* Coordinate with libc netinet/in.h header. */
 #if defined(_NETINET_IN_H)
 
-/* GLIBC headers included first so don't define anything
+/* LIBC headers included first so don't define anything
  * that would already be defined. */
 #define __UAPI_DEF_IN_ADDR		0
 #define __UAPI_DEF_IN_IPPROTO		0
@@ -103,7 +111,7 @@
  * if the glibc code didn't define them. This guard matches
  * the guard in glibc/inet/netinet/in.h which defines the
  * additional in6_addr macros e.g. s6_addr16, and s6_addr32. */
-#if defined(__USE_MISC) || defined (__USE_GNU)
+#if !defined(__GLIBC__) || defined(__USE_MISC) || defined (__USE_GNU)
 #define __UAPI_DEF_IN6_ADDR_ALT		0
 #else
 #define __UAPI_DEF_IN6_ADDR_ALT		1
@@ -169,7 +177,7 @@
 /* If we did not see any headers from any supported C libraries,
  * or we are being included in the kernel, then define everything
  * that we need. */
-#else /* !defined(__GLIBC__) */
+#else /* defined(__KERNEL__) */
 
 /* Definitions for if.h */
 #define __UAPI_DEF_IF_IFCONF 1
@@ -209,6 +217,6 @@
 /* Definitions for xattr.h */
 #define __UAPI_DEF_XATTR		1
 
-#endif /* __GLIBC__ */
+#endif /* __KERNEL__ */
 
 #endif /* _UAPI_LIBC_COMPAT_H */
