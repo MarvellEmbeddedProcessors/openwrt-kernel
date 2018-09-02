@@ -54,6 +54,8 @@
 	#size-cells = <2>;
 
 	aliases {
+		ethernet0 = &eth0;
+		ethernet1 = &eth1;
 		serial0 = &uart0;
 		serial1 = &uart1;
 	};
@@ -277,11 +279,11 @@
 			};
 
 			eth0: ethernet@30000 {
-				   compatible = "marvell,armada-3700-neta";
-				   reg = <0x30000 0x4000>;
-				   interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
-				   clocks = <&sb_periph_clk 8>;
-				   status = "disabled";
+				compatible = "marvell,armada-3700-neta";
+				reg = <0x30000 0x4000>;
+				interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
+				clocks = <&sb_periph_clk 8>;
+				status = "disabled";
 			};
 
 			mdio: mdio@32004 {
