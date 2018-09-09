@@ -622,9 +622,9 @@ static void advk_pcie_irq_mask(struct irq_data *d)
 	irq_hw_number_t hwirq = irqd_to_hwirq(d);
 	u32 mask;
 
-	mask = advk_readl(pcie, PCIE_ISR0_MASK_REG);
-	mask |= PCIE_ISR0_INTX_ASSERT(hwirq);
-	advk_writel(pcie, mask, PCIE_ISR0_MASK_REG);
+	mask = advk_readl(pcie, PCIE_ISR1_MASK_REG);
+	mask |= PCIE_ISR1_INTX_ASSERT(hwirq);
+	advk_writel(pcie, mask, PCIE_ISR1_MASK_REG);
 }
 
 static void advk_pcie_irq_unmask(struct irq_data *d)
