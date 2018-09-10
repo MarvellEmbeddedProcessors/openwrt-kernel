@@ -171,7 +171,7 @@ static struct armada_37xx_pin_group armada_37xx_nb_groups[] = {
 		      BIT(1) | BIT(13) | BIT(14), BIT(1) | BIT(19),
 		      18, 2, "gpio", "uart"),
 	PIN_GRP_GPIO("led0_od", 11, 1, BIT(20), "led"),
-	PIN_GRP_GPIO("led1_od", 12, 1, BIT(21), "led"),
+	PIN_GRP("led1_od", 12, 1, BIT(21), "gpio", "led"),  //hood modified. Original is PIN_GRP_GPIO("led1_od", 12, 1, BIT(21), "led"),
 	PIN_GRP_GPIO("led2_od", 13, 1, BIT(22), "led"),
 	PIN_GRP_GPIO("led3_od", 14, 1, BIT(23), "led"),
 
