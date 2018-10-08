@@ -3502,6 +3502,11 @@ static void mvneta_mac_config(struct net_device *ndev, unsigned int mode,
 			    MVNETA_GMAC_FORCE_LINK_DOWN);
 	}
 
+	if(state->interface == PHY_INTERFACE_MODE_1000BASEX) {
+		new_ctrl0 |= MVNETA_GMAC0_PORT_1000BASE_X;
+		printk("set 1000base-x mode\n");
+	}
+
 	if (new_ctrl0 != gmac_ctrl0)
 		mvreg_write(pp, MVNETA_GMAC_CTRL_0, new_ctrl0);
 	if (new_ctrl2 != gmac_ctrl2)
